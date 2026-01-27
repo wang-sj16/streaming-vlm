@@ -79,3 +79,5 @@ streaming-vlm-demo/server/*.log
 !streaming-vlm-demo/server/uploads/.gitkeep
 tmp*
 streaming-vlm-demo/
+.history/
+results/

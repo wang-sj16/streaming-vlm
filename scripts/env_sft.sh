@@ -10,5 +10,5 @@ pip install -e streaming_vlm/livecc_utils/
 # install flash-attn
 # find your version at https://github.com/Dao-AILab/flash-attention/releases
 # example:
-# wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.6cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
-# pip install flash_attn-2.8.2+cu12torch2.6cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
+wget https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.7cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
+pip install flash_attn-2.8.3+cu12torch2.7cxx11abiTRUE-cp311-cp311-linux_x86_64.whl

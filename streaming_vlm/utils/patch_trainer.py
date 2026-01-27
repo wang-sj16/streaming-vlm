@@ -24,7 +24,14 @@ def compute_loss_logging_labels(self, model, inputs, return_outputs=False, num_i
         inputs = {**inputs, **loss_kwargs}
     label_num = torch.where(inputs['labels'] != -100,1,0).sum().item()
     input_len = inputs['input_ids'].shape[1]
-    outputs = model(**inputs)
+    
+    # Filter out loss_kwargs that models don't accept in their forward()
+    # This ensures compatibility with both:
+    # 1. liger_kernel: passes **kwargs to self.model() which doesn't accept num_items_in_batch
+    # 2. native transformers: also doesn't accept num_items_in_batch in forward()
+    loss_kwargs_to_remove = {'num_items_in_batch'}
+    model_inputs = {k: v for k, v in inputs.items() if k not in loss_kwargs_to_remove}
+    outputs = model(**model_inputs)
     # Save past state if it exists
     # TODO: this needs to be fixed and made cleaner later.
     if self.args.past_index >= 0:
@@ -58,5 +65,15 @@ def compute_loss_logging_labels(self, model, inputs, return_outputs=False, num_i
         and num_items_in_batch is not None
     ):
         loss *= self.accelerator.num_processes
+
+    # CRITICAL FIX: Since we filter out num_items_in_batch before calling the model,
+    # the model computes loss with reduction="mean" (local average per sample).
+    # However, when model_accepts_loss_kwargs=True (as with liger_kernel's **kwargs),
+    # Trainer expects the model to handle loss scaling internally via num_items_in_batch,
+    # so Trainer does NOT divide loss by gradient_accumulation_steps.
+    # We must do this division ourselves to get correct loss values.
+    # Reference: transformers/trainer.py lines 3782-3784
+    if self.model_accepts_loss_kwargs and self.compute_loss_func is None:
+        loss = loss / self.args.gradient_accumulation_steps
 
     return (loss, outputs) if return_outputs else loss
