@@ -5,4 +5,4 @@ python streaming_vlm/eval/ovobench/transfer_annotation_format.py --input data/ov
 
 # evaluation
 conda activate streamingvlm-ovo
-torchrun --standalone --nproc_per_node=8 streaming_vlm/eval/ovobench/distributed_evaluate_ovobench.py --benchmark_dir data/ovobench --model_path models/StreamingVLM
+torchrun --standalone --nproc_per_node=8 streaming_vlm/eval/ovobench/distributed_evaluate_ovobench.py --benchmark_dir data/ovobench --model_path mit-han-lab/StreamingVLM
