@@ -133,7 +133,17 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
         )
         setattr(model, 'VIDEO_LLM', False)
 
-    for i, idx in tqdm(enumerate(sample_indices_subrem)):
+    total_samples = len(sample_indices_subrem)
+    pbar = tqdm(
+        enumerate(sample_indices_subrem),
+        total=total_samples,
+        desc=f'[Rank {rank}/{world_size}] Inference',
+        dynamic_ncols=True,
+        leave=True,
+        ncols=100,
+        bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]'
+    )
+    for i, idx in pbar:
         if idx in res:
             continue
         if getattr(model, 'nframe', None) is not None and getattr(model, 'nframe', 0) > 0:
@@ -201,6 +211,8 @@ def infer_data(model, model_name, work_dir, dataset, out_file, verbose=False, ap
             print(response, flush=True)
 
         res[idx] = response
+        # Update progress bar with sample info
+        pbar.set_postfix({'idx': idx, 'done': i + 1, 'total': total_samples})
         if (i + 1) % 20 == 0:
             dump(res, out_file)
 

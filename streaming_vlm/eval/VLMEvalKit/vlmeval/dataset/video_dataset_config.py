@@ -1,6 +1,15 @@
 from vlmeval.dataset import *
 from functools import partial
 
+lvbench_dataset = {
+    'LVBench_8frame': partial(LVBench, dataset='LVBench', nframe=8),
+    'LVBench_16frame': partial(LVBench, dataset='LVBench', nframe=16),
+    'LVBench_32frame': partial(LVBench, dataset='LVBench', nframe=32),
+    'LVBench_64frame': partial(LVBench, dataset='LVBench', nframe=64),
+    'LVBench_1fps': partial(LVBench, dataset='LVBench', fps=1.0),
+    'LVBench_0.5fps': partial(LVBench, dataset='LVBench', fps=0.5),
+}
+
 vcrbench_dataset = {
     'VCRBench_8frame_nopack': partial(VCRBench, dataset='VCR-Bench', nframe=8, pack=False),
     'VCRBench_16frame_nopack': partial(VCRBench, dataset='VCR-Bench', nframe=16, pack=False),
@@ -185,7 +194,7 @@ egoexobench_dataset = {
 supported_video_datasets = {}
 
 dataset_groups = [
-    mmbench_video_dataset, mvbench_dataset, videomme_dataset, longvideobench_dataset,
+    mmbench_video_dataset, mvbench_dataset, videomme_dataset, longvideobench_dataset, lvbench_dataset,
     mlvu_dataset, tempcompass_dataset, cgbench_dataset, worldsense_dataset, tamperbench_dataset,
     megabench_dataset, qbench_video_dataset, moviechat1k_dataset, vdc_dataset, video_holmes_dataset, vcrbench_dataset,
     cg_av_counting_dataset, video_mmlu_dataset, egoexobench_dataset
